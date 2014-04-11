@@ -1,11 +1,15 @@
 package com.restaurant.recommender;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+
 import com.facebook.HttpMethod;
 import com.facebook.Request;
 import com.facebook.Response;
@@ -15,6 +19,8 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.UserInfoChangedCallback;
+import com.restaurant.recommender.backend.API;
+import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.UserData;
 import com.restaurant.recommender.manager.UserDataManager;
 
@@ -118,6 +124,18 @@ public class MainActivity extends FragmentActivity {
 		        	public void onCompleted(Response response) {
 		        		Log.d("heghine", response.toString());
 		        		UserDataManager.$().getUserLikedRestaurants(response.getGraphObject().getInnerJSONObject());
+		        		API.sendHelloMessage(new RequestObserver() {
+							
+							@Override
+							public void onSuccess(JSONObject response) throws JSONException {
+								Log.d("heghine", "message from server = " + response.toString());
+							}
+							
+							@Override
+							public void onError(String response, Exception e) {
+								Log.e("heghine", "error = " + response.toString() + " exception = " + e.toString());
+							}
+						});
 		        	}                  
 	    		}); 
 	        Request.executeBatchAsync(request); 
