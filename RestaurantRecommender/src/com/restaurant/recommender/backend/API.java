@@ -1,19 +1,15 @@
 package com.restaurant.recommender.backend;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -27,79 +23,33 @@ import android.content.Context;
 import android.util.Log;
 
 public class API {
-	public static final String GET_USER_INFO = "get_user_info";
+	public static final String ADD_NEW_USER = "add_new_user";
 	public static final String CONNECT_FB = "connect_fb";
-	public static final String SYNC_CAGE = "sync_cage";
-	public static final String HELLO_MESSAGE = "hello.php";
 	
 	public static final String LOG = "birdland_api";
 	
 	
 	public static final String TAG = "API";
-	
 	public static final String secret = "0lymp#@creature5";
 	public static final int appVersion = 1;//SocialinApplication.APP_VERSION;
 	
 	public static HashMap<String, RequestObject> canceledRequests = new HashMap<String,RequestObject>();
 
 	
-	public static void getUserInfoAsyncByUserId(String userId, String socialinId, String updateSocialinId, int coins, int feather, long exp, int food, int[] size, String referrerId, RequestObserver observer,
-			String lang, boolean updateUserId) {
-		API.userId = socialinId;
+	public static void addNewUser(String userId, String userFbId, String firstName, String lastName, int gender, String location, RequestObserver observer) {
+		API.userId = userId;
+		API.userFbId = userFbId;
 
-		Log.e("language", "api: preference lang: " + lang);
-		String eDeviceId = "";//Utils.getAndroidId(VikingGame.$().roActivity, true);
+		String requestStr = Constants.SERVER_URL + "t=" + ADD_NEW_USER + "&user_id=" + userId + "&fb_id=" + userFbId + 
+				"&first_name=" + firstName + "&last_name=" + lastName + "&g=" + gender + "&location=" + location;  
 
-		String requestStr = new StringBuilder().append(Constants.SERVER_URL).append("t=").append(GET_USER_INFO).append("&money=").append(coins).append("&exp=").append(exp).append("&feather=").append(feather).append("&food=")
-				.append(food).append("&width=").append(size[1]).append("&height=").append(size[0]).append("&lang=").append(lang).append("&armando=").append(eDeviceId).toString();
-		if (referrerId != null && !referrerId.equals("")) {
-			requestStr += "&referrer=" + referrerId;
-		}
-		if (userId != null) {
-			requestStr += "&user_id=" + userId;
-			API.userId = userId;
-		} else if (socialinId != null && !socialinId.equals("null")) {
-			requestStr += "&socialin_id=" + socialinId;
-		}
-
-		sendRequestAsync2(requestStr, GET_USER_INFO, false, observer);
+		sendRequestAsync2(requestStr, ADD_NEW_USER, false, observer);
 	}
 
 	public static void connectToFb(String fbId, String userFbFriendsList, RequestObserver observer) {
 		sendRequestAsync(CONNECT_FB, "fbId=" + fbId +  "&friend_list=" + userFbFriendsList, observer);
 	}
-	
 
-	public static void syncCage(String userCurCageId, int sendingMoney, int sendingExp, int sendingFeather, int sendingFood, JSONArray items, String syncBirds, String syncItems, JSONArray expiredGifts, RequestObserver observer) {
-		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
-		if (sendingMoney != 0)
-			params.add(new BasicNameValuePair("sending_money", String.valueOf(sendingMoney)));
-		if (sendingExp != 0)
-			params.add(new BasicNameValuePair("sending_exp", String.valueOf(sendingExp)));
-		if (sendingFeather != 0)
-			params.add(new BasicNameValuePair("sending_feather", String.valueOf(sendingFeather)));
-		if (sendingFood != 0)
-			params.add(new BasicNameValuePair("sending_food", String.valueOf(sendingFood)));
-		if (items != null && items.length() > 0)
-			params.add(new BasicNameValuePair("items", items.toString()));
-		if (!syncBirds.equals(""))
-			params.add(new BasicNameValuePair("parrots", syncBirds));
-		if (!syncItems.equals(""))
-			params.add(new BasicNameValuePair("sync_items", syncItems));
-		if (expiredGifts != null && expiredGifts.length() > 0)
-			params.add(new BasicNameValuePair("expired_gifts", expiredGifts.toString()));
-		
-		params.add(new BasicNameValuePair("user_current_cage_id", userCurCageId));
-
-		Log.i(TAG, "syning cage : " + params.toString());
-
-		sendRequestAsync(SYNC_CAGE, params, observer, RequestObject.POST_METHOD);
-	}
-	
-	public static void sendHelloMessage(RequestObserver observer) {
-		sendRequestAsync(HELLO_MESSAGE, "", observer);
-	}
-	
 	public static void logMessage(String logMessage, Number colin, RequestObserver observer) {
 		sendRequestAsync(LOG, "error=" + logMessage + "&colin=" + colin, observer);
 	}
@@ -111,13 +61,11 @@ public class API {
 	}
 
 	private static void sendRequestAsync(String command, String params, RequestObserver observer) {
-		String paramsString = "";
-//		String paramsString = "&user_id=" + userId;
-//		if (params != null && !params.equals("")) {
-//			paramsString = paramsString + "&" + params;
-//		}
-//		String requestStr = Constants.SERVER_URL + "t=" + command + paramsString;
-		String requestStr = Constants.SERVER_URL + command + paramsString;
+		String paramsString = "&user_id=" + userId + "&fb_id=" + userFbId;
+		if (params != null && !params.equals("")) {
+			paramsString = paramsString + "&" + params;
+		}
+		String requestStr = Constants.SERVER_URL + "t=" + command + paramsString;
 		sendRequestAsync2(requestStr, command, false, observer);
 	}
 
@@ -134,32 +82,6 @@ public class API {
 			requestStack.notifyAll();
 		}
 		return requestObject;
-	}
-
-	private static void sendRequestAsync(String command, ArrayList<BasicNameValuePair> params, RequestObserver observer, int requestMethod) {
-		params.add(new BasicNameValuePair("user_id", userId));
-		String requestStr = Constants.SERVER_URL + "t=" + command;
-
-		try {
-			sendRequestAsync2(requestStr, command, new UrlEncodedFormEntity(params), observer, requestMethod);
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private static void sendRequestAsync2(String requestStr, String command, HttpEntity params, RequestObserver observer, int requestMethod) {
-		RequestObject requestObject = new RequestObject();
-		requestObject.requestObserver = observer;
-		requestObject.requestString = requestStr;
-		requestObject.command = command;
-		requestObject.requestMethod = requestMethod;
-		requestObject.params = params;
-		requestObject.secret = Utils.md5(secret + userId);
-//		requestObject.requestString = requestObject.requestString + "&sig=" + requestObject.secret + "&v=" + appVersion;
-		synchronized (requestStack) {
-			requestStack.add(requestObject);
-			requestStack.notifyAll();
-		}
 	}
 
 	private static class RequestThread extends Thread {
@@ -202,7 +124,6 @@ public class API {
 						int statusCode = -1;
 						try {
 							Log.d(TAG, "request = " + requestObject.requestString);
-							Log.d(TAG, "request = " + request.toString());
 //							debugLog(requestObject, null, requestObject.command);
 
 							response = httpClient.execute(request);
@@ -363,6 +284,7 @@ public class API {
 	private static LinkedList<RequestObject> requestStack = new LinkedList<RequestObject>();
 
 	public static String userId = "";
+	public static String userFbId = "";
 
 	public static interface RequestObserver {
 		public void onSuccess(JSONObject response) throws JSONException;

@@ -22,7 +22,9 @@ import com.facebook.widget.LoginButton.UserInfoChangedCallback;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.UserData;
+import com.restaurant.recommender.manager.PreferenceManager;
 import com.restaurant.recommender.manager.UserDataManager;
+import com.restaurant.recommender.utils.Utils;
 
 public class MainActivity extends FragmentActivity {
 	
@@ -44,16 +46,14 @@ public class MainActivity extends FragmentActivity {
 		
 		setContentView(R.layout.fragment_main);
 		
+		PreferenceManager.$().init(getApplicationContext());
+		
 		LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
 		loginButton.setUserInfoChangedCallback(new UserInfoChangedCallback() {
 			
 			@Override
 			public void onUserInfoFetched(GraphUser user) {
-				if (user != null) {
-					Log.d("heghine", "fbId = " + user.getId());
-					UserDataManager.$().userData = new UserData(user);
-					requestUserPageLikes();
-				}
+				initUser(user);
 			}
 		});
 	}
@@ -122,25 +122,54 @@ public class MainActivity extends FragmentActivity {
 	    		HttpMethod.GET,                 
 	    		new Request.Callback() {         
 		        	public void onCompleted(Response response) {
-		        		Log.d("heghine", response.toString());
 		        		UserDataManager.$().getUserLikedRestaurants(response.getGraphObject().getInnerJSONObject());
-		        		API.sendHelloMessage(new RequestObserver() {
-							
-							@Override
-							public void onSuccess(JSONObject response) throws JSONException {
-								Log.d("heghine", "message from server = " + response.toString());
-							}
-							
-							@Override
-							public void onError(String response, Exception e) {
-								Log.e("heghine", "error = " + response.toString() + " exception = " + e.toString());
-							}
-						});
 		        	}                  
 	    		}); 
 	        Request.executeBatchAsync(request); 
 		} else {
 			// do fb connect
+		}
+	}
+	
+	private void initUser(GraphUser user) {
+		if (user != null) {
+			try {
+				UserDataManager.$().userData = new UserData(user);
+				Log.d("heghine", UserDataManager.$().userData.toString());
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			
+			if (PreferenceManager.$().getUserId().equals("0")) {
+				Log.d("heghine", "addNewUser --- ");
+				API.addNewUser("0", UserDataManager.$().userData.fbId, UserDataManager.$().userData.firstName, UserDataManager.$().userData.lastName, Utils.getGenderCode(UserDataManager.$().userData.gender), UserDataManager.$().userData.location, new RequestObserver() {
+					
+					@Override
+					public void onSuccess(JSONObject response) throws JSONException {
+						String userId = response.optString("user_id", "0");
+						PreferenceManager.$().setUserId(userId);
+						API.userId = userId;
+						UserDataManager.$().userData.userId = userId;
+						
+						MainActivity.this.runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								requestUserPageLikes();
+							}
+						});
+					}
+					
+					@Override
+					public void onError(String response, Exception e) {
+						
+					}
+				});
+			} else {
+				Log.d("heghine", "user_id = " + PreferenceManager.$().getUserId());
+				UserDataManager.$().userData.userId = PreferenceManager.$().getUserId();
+				requestUserPageLikes();
+			}
 		}
 	}
 }

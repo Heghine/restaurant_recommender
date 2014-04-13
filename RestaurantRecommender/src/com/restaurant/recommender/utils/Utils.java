@@ -11,6 +11,9 @@ public class Utils {
 	public static final String TYPE_ART = "ART";
 	public static final String TYPE_ENTERTAINMENT = "ENTERTAINMENT";
 	
+	public static final String GENDER_MALE = "male";
+	public static final String GENDER_FEMALE = "female";
+	
 	public static boolean isPageTypeRestaurant(String type) {
 		if (type.contains(TYPE_RESTAURANT) || type.contains(TYPE_CAFE) || type.contains(TYPE_BAR)
 				|| (type.contains(TYPE_ART) && type.contains(TYPE_ENTERTAINMENT))) {
@@ -18,6 +21,15 @@ public class Utils {
 		}
 		
 		return false;
+	}
+	
+	public static int getGenderCode(String gender) {
+		if (gender.equals(GENDER_MALE)) {
+			return 0;
+		} else if (gender.equals(GENDER_FEMALE)) {
+			return 1;
+		}
+		return 0;
 	}
 	
 	
