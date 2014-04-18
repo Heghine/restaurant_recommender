@@ -6,5 +6,7 @@ public class Constants {
 	public static final String API_STAGE_URL = "http://192.168.4.237/restaurant_recommender_stage/api.php?";
 	
 	public static final String SERVER_URL = API_URL;
+	
+	public static final String DEFAULT_CITY = "Yerevan, Armenia";
 
 }

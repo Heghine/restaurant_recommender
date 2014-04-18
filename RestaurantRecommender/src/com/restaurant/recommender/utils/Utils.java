@@ -3,6 +3,9 @@ package com.restaurant.recommender.utils;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.HashMap;
+import com.restaurant.recommender.data.FacebookPageData;
+import com.restaurant.recommender.manager.UserDataManager;
 
 public class Utils {
 	public static final String TYPE_RESTAURANT = "RESTAURANT";
@@ -55,5 +58,16 @@ public class Utils {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	public static String getFbPageIdsString() {
+		HashMap<String, FacebookPageData> userPages = UserDataManager.$().userRestaurantPages;
+		
+		String userPagesStr = "";
+		for (String pageId : userPages.keySet()) {
+			userPagesStr += pageId + ",";
+		}
+		userPagesStr = userPagesStr.substring(0, userPagesStr.length() - 1);
+		return userPagesStr;
 	}
 }

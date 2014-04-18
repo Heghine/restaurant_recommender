@@ -103,8 +103,31 @@ public class MainActivity extends Activity {
 	    		HttpMethod.GET,                 
 	    		new Request.Callback() {         
 		        	public void onCompleted(Response response) {
-		        		UserDataManager.$().getUserLikedRestaurants(response.getGraphObject().getInnerJSONObject());
-		        		startWelcomePageActivity();
+		        		initUserFbData(response.getGraphObject().getInnerJSONObject());
+		        	}                  
+	    		}); 
+	        Request.executeBatchAsync(request); 
+		} else {
+			// do fb connect
+		}
+	}
+	
+	public void requestLikedPagesData() {
+		Session session = Session.getActiveSession();
+		if (session != null && session.isOpened()) {
+			String pageIds = Utils.getFbPageIdsString();
+			String fqlQuery = "SELECT page_id, name, location, hours FROM page WHERE page_id IN(" + pageIds + ")";
+			Log.d("heghine", fqlQuery);
+	        Bundle params = new Bundle();
+	        params.putString("q", fqlQuery);
+	        Request request = new Request(session,
+	    		"/fql",                         
+	    		params,                         
+	    		HttpMethod.GET,                 
+	    		new Request.Callback() {         
+		        	public void onCompleted(Response response) {
+//		        		Log.d("heghine", response.getGraphObject().getInnerJSONObject().toString());
+		        		UserDataManager.$().updateUserLikedPageData(response.getGraphObject().getInnerJSONObject());
 		        	}                  
 	    		}); 
 	        Request.executeBatchAsync(request); 
@@ -150,6 +173,16 @@ public class MainActivity extends Activity {
 			Log.d("heghine", "user_id = " + PreferenceManager.$().getUserId());
 			UserDataManager.$().userData.userId = PreferenceManager.$().getUserId();
 			requestUserPageLikes();
+		}
+	}
+	
+	private void initUserFbData(JSONObject data) {
+		UserDataManager.$().getUserLikedRestaurants(data);
+		if (UserDataManager.$().hasLikedRestaurantPages()) {
+			requestLikedPagesData();
+		} else {
+			// do other method
+			startWelcomePageActivity();
 		}
 	}
 	
