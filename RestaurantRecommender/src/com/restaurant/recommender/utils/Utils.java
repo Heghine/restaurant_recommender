@@ -4,6 +4,11 @@ import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.restaurant.recommender.data.FacebookPageData;
 import com.restaurant.recommender.manager.UserDataManager;
 
@@ -69,5 +74,26 @@ public class Utils {
 		}
 		userPagesStr = userPagesStr.substring(0, userPagesStr.length() - 1);
 		return userPagesStr;
+	}
+	
+	public static String getUserPreferenceString() throws JSONException {
+		HashMap<String, FacebookPageData> userPages = UserDataManager.$().userRestaurantPages;
+		
+		String userPreferencesStr = "";
+		JSONArray userPreferencesJson = new JSONArray();
+		JSONObject userPreferenceJson;
+		for (String pageId : userPages.keySet()) {
+			userPreferenceJson = new JSONObject();
+			userPreferenceJson.put("fb_id", pageId);
+			userPreferenceJson.put("type", userPages.get(pageId).type);
+			userPreferenceJson.put("name", userPages.get(pageId).name);
+			userPreferenceJson.put("location", userPages.get(pageId).location);
+			userPreferenceJson.put("working_hours", userPages.get(pageId).workingHours);
+			
+			userPreferencesJson.put(userPreferenceJson);
+		}
+		userPreferencesStr = userPreferencesJson.toString();
+		
+		return userPreferencesStr;
 	}
 }

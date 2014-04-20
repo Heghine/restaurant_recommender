@@ -25,6 +25,7 @@ import android.util.Log;
 public class API {
 	public static final String ADD_NEW_USER = "add_new_user";
 	public static final String CONNECT_FB = "connect_fb";
+	public static final String SET_USER_PREFERENCES = "set_user_preferences";
 	
 	public static final String LOG = "birdland_api";
 	
@@ -50,6 +51,10 @@ public class API {
 		sendRequestAsync(CONNECT_FB, "fbId=" + fbId +  "&friend_list=" + userFbFriendsList, observer);
 	}
 
+	public static void setUserPreferences(String preferences, RequestObserver observer) {
+		sendRequestAsync(SET_USER_PREFERENCES, "preferences=" + preferences, observer);
+	}
+	
 	public static void logMessage(String logMessage, Number colin, RequestObserver observer) {
 		sendRequestAsync(LOG, "error=" + logMessage + "&colin=" + colin, observer);
 	}

@@ -28,7 +28,7 @@ public class FacebookPageData {
 		if (pageJson.optJSONObject("hours") != null) {
 			workingHours = pageJson.getJSONObject("hours").optString("mon_1_open", "") + " - " + pageJson.getJSONObject("hours").optString("mon_1_close", "");
 		} else {
-			workingHours = "";
+			workingHours = Constants.DEFAULT_HOURS;
 		}
 	}
 }

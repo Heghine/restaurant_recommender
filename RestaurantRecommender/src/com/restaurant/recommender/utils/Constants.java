@@ -8,5 +8,6 @@ public class Constants {
 	public static final String SERVER_URL = API_URL;
 	
 	public static final String DEFAULT_CITY = "Yerevan, Armenia";
+	public static final String DEFAULT_HOURS = "10:00 - 00:00";
 
 }

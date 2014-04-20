@@ -126,8 +126,8 @@ public class MainActivity extends Activity {
 	    		HttpMethod.GET,                 
 	    		new Request.Callback() {         
 		        	public void onCompleted(Response response) {
-//		        		Log.d("heghine", response.getGraphObject().getInnerJSONObject().toString());
 		        		UserDataManager.$().updateUserLikedPageData(response.getGraphObject().getInnerJSONObject());
+		        		UserDataManager.$().updateUserLikedPageDataInBackend();
 		        	}                  
 	    		}); 
 	        Request.executeBatchAsync(request); 

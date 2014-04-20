@@ -18,5 +18,4 @@ public class WelcomePageActivity extends Activity {
 		String name = UserDataManager.$().userData.firstName + " " + UserDataManager.$().userData.lastName;
 		((TextView)findViewById(R.id.name)).setText(name);
 	}
-
 }

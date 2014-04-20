@@ -1,10 +1,15 @@
 package com.restaurant.recommender.manager;
 
 import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.util.Log;
+
+import com.restaurant.recommender.backend.API;
+import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.FacebookPageData;
 import com.restaurant.recommender.data.UserData;
 import com.restaurant.recommender.utils.Utils;
@@ -63,6 +68,29 @@ public class UserDataManager {
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void updateUserLikedPageDataInBackend() {
+		if (hasLikedRestaurantPages()) {
+			try {
+				String preferences = Utils.getUserPreferenceString();
+				Log.d("heghine", "user_preferences = " + preferences);
+				API.setUserPreferences(preferences, new RequestObserver() {
+					
+					@Override
+					public void onSuccess(JSONObject response) throws JSONException {
+						
+					}
+					
+					@Override
+					public void onError(String response, Exception e) {
+						
+					}
+				});
+			} catch (JSONException e1) {
+				e1.printStackTrace();
 			}
 		}
 	}
