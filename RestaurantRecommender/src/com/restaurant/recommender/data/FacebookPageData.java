@@ -18,11 +18,12 @@ public class FacebookPageData {
 	
 	public void updateData(JSONObject pageJson) throws JSONException {
 		name = pageJson.optString("name", "");
-		
+		name = name.replace("\'", "");
 		if (pageJson.getJSONObject("location").optString("street", "").equals("")) {
 			location = Constants.DEFAULT_CITY;
 		} else {
 			location = pageJson.getJSONObject("location").optString("street", "") + ", " + Constants.DEFAULT_CITY;
+			location = location.replace("\'", "");
 		}
 		
 		if (pageJson.optJSONObject("hours") != null) {

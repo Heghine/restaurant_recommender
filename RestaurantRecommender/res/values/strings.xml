@@ -6,5 +6,8 @@
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
     <string name="fb_app_id">265928163581585</string>
+    <string name="default_user_name">Welcome to Yerevan Rest!</string>
+    <string name="default_rating">4.1</string>
+    <string name="default_vote_count">15 votes</string>
 
 </resources>

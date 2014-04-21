@@ -45,6 +45,7 @@ public class MainActivity extends Activity {
 		
 		PreferenceManager.$().init(getApplicationContext());
 		
+		
 		LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
 		loginButton.setUserInfoChangedCallback(new UserInfoChangedCallback() {
 			
@@ -127,7 +128,7 @@ public class MainActivity extends Activity {
 	    		new Request.Callback() {         
 		        	public void onCompleted(Response response) {
 		        		UserDataManager.$().updateUserLikedPageData(response.getGraphObject().getInnerJSONObject());
-		        		UserDataManager.$().updateUserLikedPageDataInBackend();
+		        		UserDataManager.$().setUserLikedPageDataInBackend();
 		        	}                  
 	    		}); 
 	        Request.executeBatchAsync(request); 
@@ -152,8 +153,9 @@ public class MainActivity extends Activity {
 				public void onSuccess(JSONObject response) throws JSONException {
 					String userId = response.optString("user_id", "0");
 					PreferenceManager.$().setUserId(userId);
-					API.userId = userId;
 					UserDataManager.$().userData.userId = userId;
+					API.userId = userId;
+					API.userFbId = UserDataManager.$().userData.fbId;
 					
 					MainActivity.this.runOnUiThread(new Runnable() {
 						
@@ -172,6 +174,8 @@ public class MainActivity extends Activity {
 		} else {
 			Log.d("heghine", "user_id = " + PreferenceManager.$().getUserId());
 			UserDataManager.$().userData.userId = PreferenceManager.$().getUserId();
+			API.userId = UserDataManager.$().userData.userId;
+			API.userFbId = UserDataManager.$().userData.fbId;
 			requestUserPageLikes();
 		}
 	}

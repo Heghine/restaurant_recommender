@@ -1,15 +1,19 @@
 package com.restaurant.recommender.backend;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
@@ -19,52 +23,35 @@ import org.json.JSONObject;
 import com.restaurant.recommender.utils.Constants;
 import com.restaurant.recommender.utils.NetUtils;
 import com.restaurant.recommender.utils.Utils;
-import android.content.Context;
 import android.util.Log;
 
 public class API {
 	public static final String ADD_NEW_USER = "add_new_user";
-	public static final String CONNECT_FB = "connect_fb";
 	public static final String SET_USER_PREFERENCES = "set_user_preferences";
-	
-	public static final String LOG = "birdland_api";
-	
+	public static final String GET_RECOMMENDATIONS = "get_recommendations";
 	
 	public static final String TAG = "API";
 	public static final String secret = "0lymp#@creature5";
-	public static final int appVersion = 1;//SocialinApplication.APP_VERSION;
+	public static final int appVersion = 1;
 	
-	public static HashMap<String, RequestObject> canceledRequests = new HashMap<String,RequestObject>();
-
 	
 	public static void addNewUser(String userId, String userFbId, String firstName, String lastName, int gender, String location, RequestObserver observer) {
 		API.userId = userId;
 		API.userFbId = userFbId;
 
-		String requestStr = Constants.SERVER_URL + "t=" + ADD_NEW_USER + "&user_id=" + userId + "&fb_id=" + userFbId + 
-				"&first_name=" + firstName + "&last_name=" + lastName + "&g=" + gender + "&location=" + location;  
-
-		sendRequestAsync2(requestStr, ADD_NEW_USER, false, observer);
-	}
-
-	public static void connectToFb(String fbId, String userFbFriendsList, RequestObserver observer) {
-		sendRequestAsync(CONNECT_FB, "fbId=" + fbId +  "&friend_list=" + userFbFriendsList, observer);
+		sendRequestAsync(ADD_NEW_USER, "&first_name=" + firstName + "&last_name=" + lastName + "&g=" + gender + "&location=" + location, observer);
 	}
 
 	public static void setUserPreferences(String preferences, RequestObserver observer) {
-		sendRequestAsync(SET_USER_PREFERENCES, "preferences=" + preferences, observer);
+		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+		params.add(new BasicNameValuePair("preferences", preferences));
+		sendRequestAsync(SET_USER_PREFERENCES, params, RequestObject.POST_METHOD, observer);
 	}
 	
-	public static void logMessage(String logMessage, Number colin, RequestObserver observer) {
-		sendRequestAsync(LOG, "error=" + logMessage + "&colin=" + colin, observer);
+	public static void getRecommendations(RequestObserver observer) {
+		sendRequestAsync(GET_RECOMMENDATIONS, "", observer);
 	}
-
-	public static void resend(final RequestObserver observer) {
-		synchronized (requestStack) {
-			requestStack.notifyAll();
-		}
-	}
-
+	
 	private static void sendRequestAsync(String command, String params, RequestObserver observer) {
 		String paramsString = "&user_id=" + userId + "&fb_id=" + userFbId;
 		if (params != null && !params.equals("")) {
@@ -73,7 +60,33 @@ public class API {
 		String requestStr = Constants.SERVER_URL + "t=" + command + paramsString;
 		sendRequestAsync2(requestStr, command, false, observer);
 	}
+	
+	private static void sendRequestAsync(String command, ArrayList<BasicNameValuePair> params, int requestMethod, RequestObserver observer) {
+		params.add(new BasicNameValuePair("user_id", userId));
+		params.add(new BasicNameValuePair("user_fb_id", userFbId));
+		String requestStr = Constants.SERVER_URL + "t=" + command;
 
+		try {
+			sendRequestAsync2(requestStr, command, new UrlEncodedFormEntity(params), requestMethod, observer);
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	private static void sendRequestAsync2(String requestStr, String command, HttpEntity params, int requestMethod, RequestObserver observer) {
+		RequestObject requestObject = new RequestObject();
+		requestObject.requestObserver = observer;
+		requestObject.requestString = requestStr;
+		requestObject.command = command;
+		requestObject.requestMethod = requestMethod;
+		requestObject.params = params;
+		requestObject.secret = Utils.md5(secret + userId);
+		synchronized (requestStack) {
+			requestStack.add(requestObject);
+			requestStack.notifyAll();
+		}
+	}
+	
 	private static RequestObject sendRequestAsync2(String requestStr, String command, boolean silent, RequestObserver observer) {
 		RequestObject requestObject = new RequestObject();
 		requestObject.requestObserver = observer;
@@ -81,7 +94,6 @@ public class API {
 		requestObject.command = command;
 		requestObject.silent = silent;
 		requestObject.secret = Utils.md5(secret + userId);
-//		requestObject.requestString = requestObject.requestString + "&sig=" + requestObject.secret + "&v=" + appVersion;
 		synchronized (requestStack) {
 			requestStack.add(requestObject);
 			requestStack.notifyAll();
@@ -107,13 +119,13 @@ public class API {
 						}
 					}
 					if (requestStack.size() != 0) {
-						Log.d(TAG, "requestStack is not empty");
 						RequestObject requestObject;
 						synchronized (requestStack) {
 							requestObject = requestStack.get(0);
 						}
-						if (httpClient == null)
+						if (httpClient == null) {
 							httpClient = new DefaultHttpClient();
+						}
 						HttpRequestBase request = null;
 						if (requestObject.requestMethod == RequestObject.GET_METHOD) {
 							request = new HttpGet(requestObject.requestString);
@@ -123,17 +135,14 @@ public class API {
 						}
 						
 						request.setParams(timeoutParams);
-						// Execute the request
 						HttpResponse response = null;
 						String responseAsString = null;
 						int statusCode = -1;
 						try {
 							Log.d(TAG, "request = " + requestObject.requestString);
-//							debugLog(requestObject, null, requestObject.command);
 
 							response = httpClient.execute(request);
 							statusCode = response.getStatusLine().getStatusCode();
-							Log.d(TAG, "statusCode = " + statusCode);
 							if (statusCode >= 500) {
 								throw new ServerErrorExeption("Server is down, statusCode: " + statusCode);
 							}
@@ -155,7 +164,6 @@ public class API {
 							synchronized (requestStack) {
 								requestStack.remove(requestObject);
 							}
-//							debugLog(requestObject, jsonObject, requestObject.command);
 						} catch (final JSONException e) {
 							e.printStackTrace();
 							Log.d(TAG, responseAsString);
@@ -188,7 +196,6 @@ public class API {
 									requestStack.remove(requestObject);
 								}
 							}
-//							debugLog(requestObject, null, requestObject.command);
 						} catch (ClientProtocolException e) {
 							e.printStackTrace();
 							if (!requestObject.silent) {
@@ -207,11 +214,7 @@ public class API {
 									requestStack.remove(requestObject);
 								}
 							}
-						}
-						// catch (SocketException e) {
-						// e.printStackTrace();
-						// }
-						catch (IOException e) {
+						} catch (IOException e) {
 							e.printStackTrace();
 							if (!requestObject.silent) {
 //								VikingGame.$().activeActivity.runOnUiThread(new Runnable() {
@@ -267,8 +270,6 @@ public class API {
 		}
 	}
 	
-
-
 	public static class RequestObject {
 		RequestObserver requestObserver;
 		String requestString;
@@ -287,6 +288,7 @@ public class API {
 
 	private static RequestThread requestThread = new RequestThread();
 	private static LinkedList<RequestObject> requestStack = new LinkedList<RequestObject>();
+	public static HashMap<String, RequestObject> canceledRequests = new HashMap<String,RequestObject>();
 
 	public static String userId = "";
 	public static String userFbId = "";
@@ -303,6 +305,12 @@ public class API {
 		}
 	}
 
+	public static void resend(final RequestObserver observer) {
+		synchronized (requestStack) {
+			requestStack.notifyAll();
+		}
+	}
+	
 	public static void stopThread() {
 		requestThread.interrupt();
 	}
@@ -318,50 +326,5 @@ public class API {
 		HttpConnectionParams.setConnectionTimeout(timeoutParams, CONNECTION_TIMEOUT);
 		HttpConnectionParams.setSoTimeout(timeoutParams, WAIT_RESPONSE_TIMEOUT);
 		HttpConnectionParams.setTcpNoDelay(timeoutParams, true);
-	}
-
-	public static void sendLog(final String logStr, final Context context) {
-//		if ((UserDataManager.$() != null && UserDataManager.$().userData != null && UserDataManager.$().userData.configData.sendHandledErrors) || UserDataManager.$() == null) {
-//			new Thread() {
-//				@Override
-//				public void run() {
-//					try {
-//
-//						long playTime = System.currentTimeMillis() - PreferenceManager.$().getLastInMillis();
-//
-//						DefaultHttpClient httpClient = new DefaultHttpClient();
-//						PackageManager pm = context.getPackageManager();
-//						PackageInfo pi;
-//
-//						pi = pm.getPackageInfo(context.getPackageName(), 0);
-//						//HttpPost httpPost = new HttpPost("http://socialin.com/services/exception.php");
-//						HttpPost httpPost = new HttpPost("http://fvpgame.com/exception_handler/exception.php");
-//						List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.SECURITY_TOKEN, "SocialInGames2011"));
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.APPLICATION_VERSION, pi.versionName + "_handledexceptions"));
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.APPLICATION_PACKAGE, pi.packageName));
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.PHONE_MODEL, android.os.Build.MODEL));
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.ANDROID_VERSION, android.os.Build.VERSION.RELEASE));
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.APPLICATION_STACKTRACE, logStr));
-//						nvps.add(new BasicNameValuePair(com.firegnom.rat.util.Constants.ADDITIONAL_DATA, "socialin_id:" + API.userId + ", play_time_minutes:" + (float) playTime / (1000f * 60f)));
-//
-//						nvps.add(new BasicNameValuePair("handled", "1"));
-//						httpPost.setEntity(new UrlEncodedFormEntity(nvps, HTTP.UTF_8));
-//						httpClient.execute(httpPost);
-//
-//					} catch (UnsupportedEncodingException e) {
-//						e.printStackTrace();
-//					} catch (ClientProtocolException e) {
-//						e.printStackTrace();
-//					} catch (IOException e) {
-//						e.printStackTrace();
-//					} catch (NameNotFoundException e1) {
-//						e1.printStackTrace();
-//					} catch (Exception e) {
-//						e.printStackTrace();
-//					}
-//				}
-//			}.start();
-//		}
 	}
 }
