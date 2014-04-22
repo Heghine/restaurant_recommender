@@ -15,6 +15,7 @@ import com.facebook.UiLifecycleHelper;
 import com.facebook.model.GraphUser;
 import com.facebook.widget.LoginButton;
 import com.facebook.widget.LoginButton.UserInfoChangedCallback;
+import com.restaurant.recommender.activity.RecommendationsActivity;
 import com.restaurant.recommender.activity.WelcomePageActivity;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
@@ -26,6 +27,7 @@ import com.restaurant.recommender.utils.Utils;
 public class MainActivity extends Activity {
 	
 	private UiLifecycleHelper uiHelper;
+	public RestaurantRecommender restaurantRecommender;
 	
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 	    @Override
@@ -43,6 +45,7 @@ public class MainActivity extends Activity {
 		
 		setContentView(R.layout.activity_main);
 		
+		restaurantRecommender = new RestaurantRecommender(this); 
 		PreferenceManager.$().init(getApplicationContext());
 		
 		
@@ -172,6 +175,7 @@ public class MainActivity extends Activity {
 				}
 			});
 		} else {
+//			PreferenceManager.$().setUserId("4");
 			Log.d("heghine", "user_id = " + PreferenceManager.$().getUserId());
 			UserDataManager.$().userData.userId = PreferenceManager.$().getUserId();
 			API.userId = UserDataManager.$().userData.userId;
@@ -188,6 +192,11 @@ public class MainActivity extends Activity {
 			// do other method
 			startWelcomePageActivity();
 		}
+	}
+	
+	public void startRecommendationsActivity() {
+		Intent recommendationsActivity = new Intent(this, RecommendationsActivity.class);
+		startActivity(recommendationsActivity);
 	}
 	
 	private void startWelcomePageActivity() {

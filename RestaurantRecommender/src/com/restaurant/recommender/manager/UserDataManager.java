@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.util.Log;
+
+import com.restaurant.recommender.RestaurantRecommender;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.FacebookPageData;
@@ -83,7 +85,7 @@ public class UserDataManager {
 					public void onSuccess(JSONObject response) throws JSONException {
 						boolean status = response.optInt("status", 0) == 0 ? false : true;
 						if (status) {
-							
+							getRecommendations();
 						}
 					}
 					
@@ -96,5 +98,25 @@ public class UserDataManager {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void getRecommendations() {
+		API.getRecommendations(new RequestObserver() {
+			
+			@Override
+			public void onSuccess(JSONObject response) throws JSONException {
+				JSONArray recommenderItemsJson = response.getJSONArray("values");
+				for (int i = 0; i < recommenderItemsJson.length(); i++) {
+					ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
+					recommendationsData.add(item);
+				}
+				RestaurantRecommender.$().roActivity.startRecommendationsActivity();
+			}
+			
+			@Override
+			public void onError(String response, Exception e) {
+				
+			}
+		});
 	}
 }
