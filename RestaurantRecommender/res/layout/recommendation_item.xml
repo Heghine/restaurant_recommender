@@ -1,6 +1,8 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/recommendation_item_shape"
+    android:paddingBottom="10dp"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
     
@@ -9,8 +11,9 @@
 	        android:layout_height="wrap_content"
 	        android:layout_width="wrap_content"
 	        android:layout_marginTop="10dp"
-	        android:layout_marginLeft="15dp"
-	        facebook:preset_size="small"/>
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginBottom="10dp"
+	        facebook:preset_size="normal"/>
         
         <TextView 
 	        android:id="@+id/name"
@@ -19,6 +22,8 @@
 	        android:layout_toRightOf="@id/picture"
 	        android:layout_marginLeft="10dp"
 	        android:layout_marginTop="10dp"
+	        android:textSize="20sp"
+	        android:textStyle="bold"
 	        android:text="@string/default_user_name" />
         
         <TextView 
@@ -30,6 +35,7 @@
 	        android:layout_marginTop="5dp"
 	        android:layout_below="@id/name"
 	        android:textStyle="italic"
+	        android:textSize="15sp"
 	        android:text="@string/default_user_name" />
         
         <TextView
@@ -40,8 +46,9 @@
             android:padding="7dp"
             android:layout_marginRight="15dp"
             android:layout_marginTop="10dp"
-            android:background="@color/grey"
-            android:textSize="18sp"
+            android:gravity="center"
+            android:background="@drawable/recommendation_rating_shape"
+            android:textSize="19sp"
             android:text="@string/default_rating"/>
         
         <TextView 

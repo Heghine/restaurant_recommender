@@ -28,6 +28,7 @@ public class RecommendationsActivity extends Activity {
 		((ProfilePictureView) findViewById(R.id.profile_picture)).setProfileId(UserDataManager.$().userData.fbId);
 		String name = UserDataManager.$().userData.firstName + " " + UserDataManager.$().userData.lastName;
 		((TextView)findViewById(R.id.name)).setText(name);
+		((TextView)findViewById(R.id.address)).setText(UserDataManager.$().userData.location);
 		
 		recommendationAdapter = new RecommendationItemAdapter();
 		((ListView) findViewById(R.id.recommendations)).setAdapter(recommendationAdapter);
@@ -65,7 +66,7 @@ public class RecommendationsActivity extends Activity {
 			((TextView) view.findViewById(R.id.name)).setText(itemData.name);
 			((TextView) view.findViewById(R.id.address)).setText(itemData.address);
 			((TextView) view.findViewById(R.id.rating)).setText("" + itemData.rating);
-			((TextView) view.findViewById(R.id.rating_count)).setText("" + itemData.ratingCount);
+			((TextView) view.findViewById(R.id.rating_count)).setText("" + itemData.ratingCount + "votes");
 			
 			return view;
 		}
