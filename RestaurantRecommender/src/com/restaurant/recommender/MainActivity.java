@@ -153,7 +153,7 @@ public class MainActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		
+		PreferenceManager.$().setUserId("4");
 		if (PreferenceManager.$().getUserId().equals("0")) {
 			Log.d("heghine", "addNewUser --- ");
 			API.addNewUser("0", UserDataManager.$().userData.fbId, UserDataManager.$().userData.firstName, UserDataManager.$().userData.lastName, Utils.getGenderCode(UserDataManager.$().userData.gender), UserDataManager.$().userData.location, new RequestObserver() {
@@ -181,7 +181,6 @@ public class MainActivity extends Activity {
 				}
 			});
 		} else {
-//			PreferenceManager.$().setUserId("4");
 			Log.d("heghine", "user_id = " + PreferenceManager.$().getUserId());
 			UserDataManager.$().userData.userId = PreferenceManager.$().getUserId();
 			API.userId = UserDataManager.$().userData.userId;
@@ -192,12 +191,12 @@ public class MainActivity extends Activity {
 	
 	private void initUserFbData(JSONObject data) {
 		UserDataManager.$().getUserLikedRestaurants(data);
-		if (UserDataManager.$().hasLikedRestaurantPages()) {
-			requestLikedPagesData();
-		} else {
+//		if (UserDataManager.$().hasLikedRestaurantPages()) {
+//			requestLikedPagesData();
+//		} else {
 			// do other method
 			startWelcomePageActivity();
-		}
+//		}
 	}
 	
 	public void startRecommendationsActivity() {

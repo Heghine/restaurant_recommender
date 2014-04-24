@@ -49,8 +49,8 @@ public class API {
 		sendRequestAsync(SET_USER_PREFERENCES, params, RequestObject.POST_METHOD, observer);
 	}
 	
-	public static void getRecommendations(RequestObserver observer) {
-		sendRequestAsync(GET_RECOMMENDATIONS, "", observer);
+	public static void getRecommendations(int type, RequestObserver observer) {
+		sendRequestAsync(GET_RECOMMENDATIONS, "type=" + type, observer);
 	}
 	
 	public static void getMoodRecommendations(String type, RequestObserver observer) {

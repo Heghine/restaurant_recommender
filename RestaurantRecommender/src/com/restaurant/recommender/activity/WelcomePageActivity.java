@@ -3,18 +3,16 @@ package com.restaurant.recommender.activity;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
-
 import com.facebook.widget.ProfilePictureView;
 import com.restaurant.recommender.R;
-import com.restaurant.recommender.RestaurantRecommender;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.ItemData;
@@ -70,12 +68,20 @@ public class WelcomePageActivity extends Activity {
 					@Override
 					public void onSuccess(JSONObject response) throws JSONException {
 						Log.d("heghine", response.toString());
-						JSONArray recommenderItemsJson = response.getJSONArray("values");
+						JSONArray recommenderItemsJson = response.getJSONArray("recommendations");
 						for (int i = 0; i < recommenderItemsJson.length(); i++) {
 							ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
 							UserDataManager.$().recommendationsData.add(item);
 						}
-						RestaurantRecommender.$().roActivity.startRecommendationsActivity();
+						
+						WelcomePageActivity.this.runOnUiThread(new Runnable() {
+							
+							@Override
+							public void run() {
+								Intent recommendationsActivity = new Intent(WelcomePageActivity.this, RecommendationsActivity.class);
+								startActivity(recommendationsActivity);
+							}
+						});
 					}
 					
 					@Override

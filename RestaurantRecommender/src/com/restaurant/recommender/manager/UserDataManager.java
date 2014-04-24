@@ -13,6 +13,7 @@ import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.FacebookPageData;
 import com.restaurant.recommender.data.ItemData;
 import com.restaurant.recommender.data.UserData;
+import com.restaurant.recommender.utils.Constants;
 import com.restaurant.recommender.utils.Utils;
 
 public class UserDataManager {
@@ -101,7 +102,7 @@ public class UserDataManager {
 	}
 	
 	public void getRecommendations() {
-		API.getRecommendations(new RequestObserver() {
+		API.getRecommendations(Constants.RECOMMENDATION_TYPE_PREDICTION, new RequestObserver() {
 			
 			@Override
 			public void onSuccess(JSONObject response) throws JSONException {
