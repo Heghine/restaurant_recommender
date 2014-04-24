@@ -22,6 +22,7 @@ import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.UserData;
 import com.restaurant.recommender.manager.PreferenceManager;
 import com.restaurant.recommender.manager.UserDataManager;
+import com.restaurant.recommender.utils.Constants;
 import com.restaurant.recommender.utils.Utils;
 
 public class MainActivity extends Activity {
@@ -98,7 +99,7 @@ public class MainActivity extends Activity {
 	public void requestUserPageLikes() {
 		Session session = Session.getActiveSession();
 		if (session != null && session.isOpened()) {
-			String fqlQuery = "SELECT uid, page_id, type FROM page_fan WHERE uid=" + UserDataManager.$().userData.fbId;
+			String fqlQuery = "SELECT uid, page_id, type FROM page_fan WHERE uid=" + UserDataManager.$().userData.fbId + " LIMIT " + Constants.FACEBOOK_PAGES_LIMIT;
 	        Bundle params = new Bundle();
 	        params.putString("q", fqlQuery);
 	        Request request = new Request(session,
@@ -107,6 +108,11 @@ public class MainActivity extends Activity {
 	    		HttpMethod.GET,                 
 	    		new Request.Callback() {         
 		        	public void onCompleted(Response response) {
+		        		try {
+							Log.d("heghine", "" + response.getGraphObject().getInnerJSONObject().getJSONArray("data").length());
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
 		        		initUserFbData(response.getGraphObject().getInnerJSONObject());
 		        	}                  
 	    		}); 

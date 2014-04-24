@@ -11,7 +11,7 @@ public class ItemData {
 	public String workingHours;
 	
 	public int ratingCount;
-	public int rating;
+	public double rating;
 	
 	public ItemData(JSONObject itemJson) {
 		itemId = itemJson.optInt("item_id", 0);
@@ -21,7 +21,6 @@ public class ItemData {
 		workingHours = itemJson.optString("working_hours", "");
 		
 		ratingCount = itemJson.optInt("rating_count", 1);
-		rating = itemJson.optInt("rating", 5);
-	} 
-
+		rating = itemJson.optDouble("rating", 1.0);
+	}
 }

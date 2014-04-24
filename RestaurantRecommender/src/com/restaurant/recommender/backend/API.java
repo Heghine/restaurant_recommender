@@ -29,6 +29,7 @@ public class API {
 	public static final String ADD_NEW_USER = "add_new_user";
 	public static final String SET_USER_PREFERENCES = "set_user_preferences";
 	public static final String GET_RECOMMENDATIONS = "get_recommendations";
+	public static final String GET_MOOD_RECOMMENDATIONS = "get_mood_recommendations";
 	
 	public static final String TAG = "API";
 	public static final String secret = "0lymp#@creature5";
@@ -50,6 +51,10 @@ public class API {
 	
 	public static void getRecommendations(RequestObserver observer) {
 		sendRequestAsync(GET_RECOMMENDATIONS, "", observer);
+	}
+	
+	public static void getMoodRecommendations(String type, RequestObserver observer) {
+		sendRequestAsync(GET_MOOD_RECOMMENDATIONS, "type=" + type, observer);
 	}
 	
 	private static void sendRequestAsync(String command, String params, RequestObserver observer) {

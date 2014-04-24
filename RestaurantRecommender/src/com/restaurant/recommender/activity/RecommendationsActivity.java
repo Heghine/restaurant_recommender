@@ -14,6 +14,7 @@ import com.facebook.widget.ProfilePictureView;
 import com.restaurant.recommender.R;
 import com.restaurant.recommender.data.ItemData;
 import com.restaurant.recommender.manager.UserDataManager;
+import com.restaurant.recommender.utils.Utils;
 
 public class RecommendationsActivity extends Activity {
 	
@@ -65,8 +66,8 @@ public class RecommendationsActivity extends Activity {
 			((ProfilePictureView) view.findViewById(R.id.picture)).setProfileId(itemData.itemFbId);
 			((TextView) view.findViewById(R.id.name)).setText(itemData.name);
 			((TextView) view.findViewById(R.id.address)).setText(itemData.address);
-			((TextView) view.findViewById(R.id.rating)).setText("" + itemData.rating);
-			((TextView) view.findViewById(R.id.rating_count)).setText("" + itemData.ratingCount + "votes");
+			((TextView) view.findViewById(R.id.rating)).setText(String.valueOf(itemData.rating));
+			((TextView) view.findViewById(R.id.rating_count)).setText(Utils.getRatingCountString(itemData.ratingCount));
 			
 			return view;
 		}

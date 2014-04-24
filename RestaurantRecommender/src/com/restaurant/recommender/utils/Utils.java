@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.annotation.SuppressLint;
 import com.restaurant.recommender.data.FacebookPageData;
 import com.restaurant.recommender.manager.UserDataManager;
 
@@ -22,7 +23,9 @@ public class Utils {
 	public static final String GENDER_MALE = "male";
 	public static final String GENDER_FEMALE = "female";
 	
+	@SuppressLint("DefaultLocale")
 	public static boolean isPageTypeRestaurant(String type) {
+		type = type.toUpperCase();
 		if (type.contains(TYPE_RESTAURANT) || type.contains(TYPE_CAFE) || type.contains(TYPE_BAR)
 				|| (type.contains(TYPE_ART) && type.contains(TYPE_ENTERTAINMENT))) {
 			return true;
@@ -95,5 +98,16 @@ public class Utils {
 		userPreferencesStr = userPreferencesJson.toString();
 		
 		return userPreferencesStr;
+	}
+	
+	public static String getRatingCountString(int count) {
+		String countStr = "";
+		if (count > 1) {
+			countStr = count + " votes";
+		} else {
+			countStr = count + " vote";
+		}
+		
+		return countStr;
 	}
 }

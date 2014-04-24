@@ -9,5 +9,11 @@
     <string name="default_user_name">Welcome to Yerevan Rest!</string>
     <string name="default_rating">4.1</string>
     <string name="default_vote_count">15 votes</string>
+    
+    <string name="select_mood">I am in a mood of ..</string>
+    <string name="mood_sad">MELANCHOLY</string>
+    <string name="mood_music">LISTENING TO MUSIC</string>
+    <string name="mood_dancing">DANCING</string>
+    <string name="mood_coffee">COFFEE</string>
 
 </resources>
