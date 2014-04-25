@@ -2,7 +2,7 @@ package com.restaurant.recommender.utils;
 
 public class Constants {	
 	
-	public static final String API_URL = "http://192.168.1.104/restaurant_recommender/api.php?"; //"http://192.168.4.237:8080/RestaurantRecommenderAPI";
+	public static final String API_URL = "http://192.168.4.237/restaurant_recommender/api.php?"; //"http://192.168.4.237:8080/RestaurantRecommenderAPI";
 	public static final String API_STAGE_URL = "http://192.168.4.237/restaurant_recommender_stage/api.php?";
 	
 	public static final String SERVER_URL = API_URL;
@@ -13,5 +13,11 @@ public class Constants {
 	
 	public static final int RECOMMENDATION_TYPE_TOPN = 1;
 	public static final int RECOMMENDATION_TYPE_PREDICTION = 2;
+	
+	public static final String MOOD_RECOMMENDATION_TYPE_COFFEE = "coffee";
+	public static final String MOOD_RECOMMENDATION_TYPE_DANCE = "dance";
+	public static final String MOOD_RECOMMENDATION_TYPE_SAD = "sad";
+	public static final String MOOD_RECOMMENDATION_TYPE_FOOD = "food";
+	public static final String MOOD_RECOMMENDATION_TYPE_MUSIC = "music";
 
 }

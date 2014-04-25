@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -17,6 +16,7 @@ import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.ItemData;
 import com.restaurant.recommender.manager.UserDataManager;
+import com.restaurant.recommender.utils.Constants;
 
 public class WelcomePageActivity extends Activity {
 	
@@ -36,7 +36,7 @@ public class WelcomePageActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				
+				getMoodRecommendation(Constants.MOOD_RECOMMENDATION_TYPE_SAD);
 			}
 		});
 		
@@ -45,7 +45,7 @@ public class WelcomePageActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				
+				getMoodRecommendation(Constants.MOOD_RECOMMENDATION_TYPE_MUSIC);
 			}
 		});
 		
@@ -54,7 +54,7 @@ public class WelcomePageActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				
+				getMoodRecommendation(Constants.MOOD_RECOMMENDATION_TYPE_DANCE);
 			}
 		});
 		
@@ -63,32 +63,44 @@ public class WelcomePageActivity extends Activity {
 			
 			@Override
 			public void onClick(View arg0) {
-				API.getMoodRecommendations("coffee", new RequestObserver() {
+				getMoodRecommendation(Constants.MOOD_RECOMMENDATION_TYPE_COFFEE);
+			}
+		});
+		
+		Button foodMoodButton = (Button) findViewById(R.id.mood_food_button);
+		foodMoodButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				getMoodRecommendation(Constants.MOOD_RECOMMENDATION_TYPE_FOOD);
+			}
+		});
+	}
+	
+	public void getMoodRecommendation(String moodType) {
+		API.getMoodRecommendations(moodType, new RequestObserver() {
+			
+			@Override
+			public void onSuccess(JSONObject response) throws JSONException {
+				JSONArray recommenderItemsJson = response.getJSONArray("recommendations");
+				for (int i = 0; i < recommenderItemsJson.length(); i++) {
+					ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
+					UserDataManager.$().recommendationsData.add(item);
+				}
+				
+				WelcomePageActivity.this.runOnUiThread(new Runnable() {
 					
 					@Override
-					public void onSuccess(JSONObject response) throws JSONException {
-						Log.d("heghine", response.toString());
-						JSONArray recommenderItemsJson = response.getJSONArray("recommendations");
-						for (int i = 0; i < recommenderItemsJson.length(); i++) {
-							ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
-							UserDataManager.$().recommendationsData.add(item);
-						}
-						
-						WelcomePageActivity.this.runOnUiThread(new Runnable() {
-							
-							@Override
-							public void run() {
-								Intent recommendationsActivity = new Intent(WelcomePageActivity.this, RecommendationsActivity.class);
-								startActivity(recommendationsActivity);
-							}
-						});
-					}
-					
-					@Override
-					public void onError(String response, Exception e) {
-						Log.d("heghine", response.toString());
+					public void run() {
+						Intent recommendationsActivity = new Intent(WelcomePageActivity.this, RecommendationsActivity.class);
+						startActivity(recommendationsActivity);
 					}
 				});
+			}
+			
+			@Override
+			public void onError(String response, Exception e) {
+				
 			}
 		});
 	}

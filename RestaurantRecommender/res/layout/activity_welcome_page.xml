@@ -102,6 +102,14 @@
              android:layout_marginBottom="15dp"
              android:layout_width="200dp"
              android:layout_height="wrap_content"/>
+		 
+		 <Button 
+             android:id="@+id/mood_food_button"
+             android:background="@drawable/mood_button_shape"
+             android:text="@string/mood_food"
+             android:layout_marginBottom="15dp"
+             android:layout_width="200dp"
+             android:layout_height="wrap_content"/>
          
      </LinearLayout>
 
