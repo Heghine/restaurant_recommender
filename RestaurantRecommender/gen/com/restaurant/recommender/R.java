@@ -998,11 +998,12 @@ containing a value of this type.
         public static final int abc_split_action_bar_is_narrow=0x7f060002;
     }
     public static final class color {
-        public static final int abc_search_url_text_holo=0x7f07000d;
+        public static final int abc_search_url_text_holo=0x7f07000e;
         public static final int abc_search_url_text_normal=0x7f070000;
         public static final int abc_search_url_text_pressed=0x7f070002;
         public static final int abc_search_url_text_selected=0x7f070001;
         public static final int bg_color=0x7f07000a;
+        public static final int black=0x7f07000c;
         public static final int com_facebook_blue=0x7f070005;
         public static final int com_facebook_loginview_text_color=0x7f070009;
         public static final int com_facebook_picker_search_bar_background=0x7f070003;
@@ -1010,7 +1011,7 @@ containing a value of this type.
         public static final int com_facebook_usersettingsfragment_connected_shadow_color=0x7f070007;
         public static final int com_facebook_usersettingsfragment_connected_text_color=0x7f070006;
         public static final int com_facebook_usersettingsfragment_not_connected_text_color=0x7f070008;
-        public static final int grey=0x7f07000c;
+        public static final int grey=0x7f07000d;
         public static final int white=0x7f07000b;
     }
     public static final class dimen {
@@ -1293,7 +1294,7 @@ containing a value of this type.
         public static final int action_menu_divider=0x7f050016;
         public static final int action_menu_presenter=0x7f050017;
         public static final int action_mode_close_button=0x7f050026;
-        public static final int action_settings=0x7f05006d;
+        public static final int action_settings=0x7f050074;
         public static final int activity_chooser_view_content=0x7f050027;
         public static final int add_review_button=0x7f05004c;
         public static final int address=0x7f050046;
@@ -1326,6 +1327,7 @@ containing a value of this type.
         public static final int default_activity_button=0x7f05002a;
         public static final int dialog=0x7f05000e;
         public static final int disableHome=0x7f050008;
+        public static final int done=0x7f050071;
         public static final int dropdown=0x7f05000f;
         public static final int edit_query=0x7f050032;
         public static final int end=0x7f050013;
@@ -1337,6 +1339,12 @@ containing a value of this type.
         public static final int icon=0x7f05002c;
         public static final int ifRoom=0x7f05000a;
         public static final int image=0x7f050029;
+        public static final int item_type=0x7f05006c;
+        public static final int item_type_coffee=0x7f05006f;
+        public static final int item_type_dance=0x7f05006e;
+        public static final int item_type_food=0x7f05006d;
+        public static final int item_type_music=0x7f050070;
+        public static final int item_type_question_text=0x7f05006b;
         public static final int large=0x7f05001b;
         public static final int listMode=0x7f050001;
         public static final int list_item=0x7f05002b;
@@ -1361,12 +1369,12 @@ containing a value of this type.
         public static final int radio=0x7f050031;
         public static final int rating=0x7f050049;
         public static final int rating_count=0x7f05004a;
-        public static final int rating_text=0x7f05006a;
+        public static final int rating_text=0x7f050072;
         public static final int recommendations=0x7f050047;
         public static final int restaurant_reviews=0x7f05004d;
-        public static final int review=0x7f05006c;
+        public static final int review=0x7f05006a;
         public static final int review_button_layout=0x7f05004b;
-        public static final int review_date=0x7f05006b;
+        public static final int review_date=0x7f050073;
         public static final int search_badge=0x7f050034;
         public static final int search_bar=0x7f050033;
         public static final int search_button=0x7f050035;
@@ -1461,9 +1469,10 @@ containing a value of this type.
         public static final int com_facebook_placepickerfragment_list_row=0x7f030027;
         public static final int com_facebook_search_bar_layout=0x7f030028;
         public static final int com_facebook_usersettingsfragment=0x7f030029;
-        public static final int recommendation_item=0x7f03002a;
-        public static final int restaurant_rating_item=0x7f03002b;
-        public static final int support_simple_spinner_dropdown_item=0x7f03002c;
+        public static final int dialog_item_rating=0x7f03002a;
+        public static final int recommendation_item=0x7f03002b;
+        public static final int restaurant_rating_item=0x7f03002c;
+        public static final int support_simple_spinner_dropdown_item=0x7f03002d;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;
@@ -1542,14 +1551,22 @@ containing a value of this type.
         public static final int default_review=0x7f0a002e;
         public static final int default_user_name=0x7f0a002b;
         public static final int default_vote_count=0x7f0a002f;
+        public static final int done=0x7f0a003f;
         public static final int fb_app_id=0x7f0a002a;
         public static final int hello_world=0x7f0a0028;
+        public static final int item_type_coffee=0x7f0a003e;
+        public static final int item_type_dance=0x7f0a003b;
+        public static final int item_type_food=0x7f0a003d;
+        public static final int item_type_music=0x7f0a003c;
         public static final int mood_coffee=0x7f0a0036;
         public static final int mood_dancing=0x7f0a0035;
         public static final int mood_food=0x7f0a0037;
         public static final int mood_music=0x7f0a0034;
         public static final int mood_sad=0x7f0a0033;
         public static final int rating=0x7f0a0031;
+        public static final int rating_dialog_hint=0x7f0a0039;
+        public static final int rating_dialog_title=0x7f0a0038;
+        public static final int rating_dialog_type_question=0x7f0a003a;
         public static final int select_mood=0x7f0a0032;
         public static final int welcome=0x7f0a0027;
     }

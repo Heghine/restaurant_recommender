@@ -21,5 +21,14 @@
     <string name="mood_dancing">DANCING</string>
     <string name="mood_coffee">COFFEE</string>
     <string name="mood_food">EATING</string>
+    
+    <string name="rating_dialog_title">Leave your feedback!</string>
+    <string name="rating_dialog_hint">Your review .. </string>
+    <string name="rating_dialog_type_question">What would you do here?</string>
+    <string name="item_type_dance">Dance</string>
+    <string name="item_type_music">Listen to Music</string>
+    <string name="item_type_food">Eat</string>
+    <string name="item_type_coffee">Drink coffee</string>
+    <string name="done">Done</string>
 
 </resources>

@@ -1,18 +1,30 @@
 package com.restaurant.recommender.activity;
 
 import java.util.ArrayList;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
 import com.facebook.widget.ProfilePictureView;
 import com.restaurant.recommender.R;
+import com.restaurant.recommender.backend.API;
+import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.ItemData;
+import com.restaurant.recommender.data.ItemReviewData;
 import com.restaurant.recommender.manager.UserDataManager;
 import com.restaurant.recommender.utils.Utils;
 
@@ -33,6 +45,52 @@ public class RecommendationsActivity extends Activity {
 		
 		recommendationAdapter = new RecommendationItemAdapter();
 		((ListView) findViewById(R.id.recommendations)).setAdapter(recommendationAdapter);
+		((ListView) findViewById(R.id.recommendations)).setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+				int selectedItemId = recommendationAdapter.getItem(position).itemId;
+				getItemRevies(selectedItemId);
+			}
+		});
+	}
+	
+	public void getItemRevies(final int selectedItemId) {
+		if (UserDataManager.$().itemRatings.get(selectedItemId) == null) {
+			API.getItemReviews(selectedItemId, new RequestObserver() {
+				
+				@Override
+				public void onSuccess(JSONObject response) throws JSONException {
+					JSONArray reviewsJson = response.getJSONArray("reviews");
+					ArrayList<ItemReviewData> itemReviews = new ArrayList<ItemReviewData>();
+					for (int i = 0; i < reviewsJson.length(); i++) {
+						ItemReviewData itemReviewData = new ItemReviewData(reviewsJson.getJSONObject(i));
+						itemReviews.add(itemReviewData);
+					}
+					UserDataManager.$().itemRatings.append(selectedItemId, itemReviews);
+					RecommendationsActivity.this.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							startRestaurantRatingActivity(selectedItemId);
+						}
+					});
+				}
+				
+				@Override
+				public void onError(String response, Exception e) {
+					
+				}
+			});
+		} else {
+			startRestaurantRatingActivity(selectedItemId);
+		}
+	}
+	
+	public void startRestaurantRatingActivity(int selectedItemId) {
+		Intent restaurantRatingActivity = new Intent(this, RestaurantRatingActivity.class);
+		restaurantRatingActivity.putExtra("item_id", selectedItemId);
+		startActivity(restaurantRatingActivity);
 	}
 	
 	private class RecommendationItemAdapter extends BaseAdapter {

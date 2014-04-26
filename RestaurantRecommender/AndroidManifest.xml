@@ -32,6 +32,10 @@
             android:name="com.restaurant.recommender.activity.RecommendationsActivity"
             android:screenOrientation="portrait">
         </activity>
+        <activity
+            android:name="com.restaurant.recommender.activity.RestaurantRatingActivity"
+            android:screenOrientation="portrait">
+        </activity>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/fb_app_id"/>
         <activity android:name="com.facebook.LoginActivity"></activity>
     </application>

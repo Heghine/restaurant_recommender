@@ -30,6 +30,7 @@ public class API {
 	public static final String SET_USER_PREFERENCES = "set_user_preferences";
 	public static final String GET_RECOMMENDATIONS = "get_recommendations";
 	public static final String GET_MOOD_RECOMMENDATIONS = "get_mood_recommendations";
+	public static final String GET_ITEM_REVIEWS = "get_item_reviews";
 	
 	public static final String TAG = "API";
 	public static final String secret = "0lymp#@creature5";
@@ -56,6 +57,10 @@ public class API {
 	public static void getMoodRecommendations(String type, RequestObserver observer) {
 		sendRequestAsync(GET_MOOD_RECOMMENDATIONS, "type=" + type, observer);
 	}
+	
+	public static void getItemReviews(int itemId, RequestObserver observer) {
+		sendRequestAsync(GET_ITEM_REVIEWS, "item_id=" + itemId, observer);
+	} 
 	
 	private static void sendRequestAsync(String command, String params, RequestObserver observer) {
 		String paramsString = "&user_id=" + userId + "&fb_id=" + userFbId;

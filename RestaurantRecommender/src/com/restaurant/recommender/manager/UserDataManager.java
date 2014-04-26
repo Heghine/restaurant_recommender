@@ -2,16 +2,20 @@ package com.restaurant.recommender.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.util.Log;
+import android.util.SparseArray;
 
 import com.restaurant.recommender.RestaurantRecommender;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.FacebookPageData;
 import com.restaurant.recommender.data.ItemData;
+import com.restaurant.recommender.data.ItemReviewData;
 import com.restaurant.recommender.data.UserData;
 import com.restaurant.recommender.utils.Constants;
 import com.restaurant.recommender.utils.Utils;
@@ -34,6 +38,7 @@ public class UserDataManager {
 	
 	public UserData userData;
 	public ArrayList<ItemData> recommendationsData = new ArrayList<ItemData>();
+	public SparseArray<ArrayList<ItemReviewData>> itemRatings = new SparseArray<ArrayList<ItemReviewData>>();
 	
 	public HashMap<String, FacebookPageData> userRestaurantPages = new HashMap<String, FacebookPageData>();
 	
@@ -119,5 +124,15 @@ public class UserDataManager {
 				
 			}
 		});
+	}
+	
+	public ItemData getItemDataById(int itemId) {
+		for (int i = 0; i < recommendationsData.size(); i++) {
+			if (recommendationsData.get(i).itemId == itemId) {
+				return recommendationsData.get(i);
+			}
+		}
+		
+		return null;
 	}
 }
