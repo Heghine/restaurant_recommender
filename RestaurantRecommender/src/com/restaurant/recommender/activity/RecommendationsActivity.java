@@ -30,13 +30,15 @@ import com.restaurant.recommender.utils.Utils;
 
 public class RecommendationsActivity extends Activity {
 	
-	RecommendationItemAdapter recommendationAdapter;
+	private RecommendationItemAdapter recommendationAdapter;
+	private String moodType;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
 		setContentView(R.layout.activity_recommendations);
+		moodType = getIntent().getExtras().getString("mood_type");
 		
 		((ProfilePictureView) findViewById(R.id.profile_picture)).setProfileId(UserDataManager.$().userData.fbId);
 		String name = UserDataManager.$().userData.firstName + " " + UserDataManager.$().userData.lastName;
@@ -95,7 +97,7 @@ public class RecommendationsActivity extends Activity {
 	
 	private class RecommendationItemAdapter extends BaseAdapter {
 		
-		ArrayList<ItemData> recommdationItems = UserDataManager.$().recommendationsData;
+		ArrayList<ItemData> recommdationItems = moodType.equals("") ? UserDataManager.$().recommendationsData : UserDataManager.$().moodRecommendationsData.get(moodType);
 		
 		@Override
 		public int getCount() {

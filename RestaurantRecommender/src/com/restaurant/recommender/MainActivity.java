@@ -108,11 +108,6 @@ public class MainActivity extends Activity {
 	    		HttpMethod.GET,                 
 	    		new Request.Callback() {         
 		        	public void onCompleted(Response response) {
-		        		try {
-							Log.d("heghine", "" + response.getGraphObject().getInnerJSONObject().getJSONArray("data").length());
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
 		        		initUserFbData(response.getGraphObject().getInnerJSONObject());
 		        	}                  
 	    		}); 
@@ -199,8 +194,9 @@ public class MainActivity extends Activity {
 //		}
 	}
 	
-	public void startRecommendationsActivity() {
+	public void startRecommendationsActivity(String moodType) {
 		Intent recommendationsActivity = new Intent(this, RecommendationsActivity.class);
+		recommendationsActivity.putExtra("mood_type", moodType);
 		startActivity(recommendationsActivity);
 	}
 	

@@ -38,6 +38,7 @@ public class UserDataManager {
 	
 	public UserData userData;
 	public ArrayList<ItemData> recommendationsData = new ArrayList<ItemData>();
+	public HashMap<String, ArrayList<ItemData>> moodRecommendationsData = new HashMap<String, ArrayList<ItemData>>();
 	public SparseArray<ArrayList<ItemReviewData>> itemRatings = new SparseArray<ArrayList<ItemReviewData>>();
 	
 	public HashMap<String, FacebookPageData> userRestaurantPages = new HashMap<String, FacebookPageData>();
@@ -116,7 +117,7 @@ public class UserDataManager {
 					ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
 					recommendationsData.add(item);
 				}
-				RestaurantRecommender.$().roActivity.startRecommendationsActivity();
+				RestaurantRecommender.$().roActivity.startRecommendationsActivity("");
 			}
 			
 			@Override
@@ -134,5 +135,9 @@ public class UserDataManager {
 		}
 		
 		return null;
+	}
+	
+	public boolean hasMoodTypeRecommendations(String type) {
+		return moodRecommendationsData.get(type) != null;
 	}
 }

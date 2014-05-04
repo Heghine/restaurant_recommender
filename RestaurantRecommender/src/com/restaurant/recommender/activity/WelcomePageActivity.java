@@ -1,10 +1,10 @@
 package com.restaurant.recommender.activity;
 
+import java.util.ArrayList;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.facebook.widget.ProfilePictureView;
 import com.restaurant.recommender.R;
+import com.restaurant.recommender.RestaurantRecommender;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.ItemData;
@@ -77,31 +78,41 @@ public class WelcomePageActivity extends Activity {
 		});
 	}
 	
-	public void getMoodRecommendation(String moodType) {
-		API.getMoodRecommendations(moodType, new RequestObserver() {
-			
-			@Override
-			public void onSuccess(JSONObject response) throws JSONException {
-				JSONArray recommenderItemsJson = response.getJSONArray("recommendations");
-				for (int i = 0; i < recommenderItemsJson.length(); i++) {
-					ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
-					UserDataManager.$().recommendationsData.add(item);
+	public void getMoodRecommendation(final String moodType) {
+		if (UserDataManager.$().hasMoodTypeRecommendations(moodType)) {
+			WelcomePageActivity.this.runOnUiThread(new Runnable() {
+				
+				@Override
+				public void run() {
+					RestaurantRecommender.$().roActivity.startRecommendationsActivity(moodType);
+				}
+			});
+		} else {
+			API.getMoodRecommendations(moodType, new RequestObserver() {
+				
+				@Override
+				public void onSuccess(JSONObject response) throws JSONException {
+					JSONArray recommenderItemsJson = response.getJSONArray("recommendations");
+					ArrayList<ItemData> moodRecommendations = new ArrayList<ItemData>();
+					for (int i = 0; i < recommenderItemsJson.length(); i++) {
+						ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
+						moodRecommendations.add(item);
+					}
+					UserDataManager.$().moodRecommendationsData.put(moodType, moodRecommendations);
+					WelcomePageActivity.this.runOnUiThread(new Runnable() {
+						
+						@Override
+						public void run() {
+							RestaurantRecommender.$().roActivity.startRecommendationsActivity(moodType);
+						}
+					});
 				}
 				
-				WelcomePageActivity.this.runOnUiThread(new Runnable() {
+				@Override
+				public void onError(String response, Exception e) {
 					
-					@Override
-					public void run() {
-						Intent recommendationsActivity = new Intent(WelcomePageActivity.this, RecommendationsActivity.class);
-						startActivity(recommendationsActivity);
-					}
-				});
-			}
-			
-			@Override
-			public void onError(String response, Exception e) {
-				
-			}
-		});
+				}
+			});
+		}
 	}
 }
