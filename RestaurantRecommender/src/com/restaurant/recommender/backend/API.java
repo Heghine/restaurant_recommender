@@ -31,6 +31,7 @@ public class API {
 	public static final String GET_RECOMMENDATIONS = "get_recommendations";
 	public static final String GET_MOOD_RECOMMENDATIONS = "get_mood_recommendations";
 	public static final String GET_ITEM_REVIEWS = "get_item_reviews";
+	public static final String SET_ITEM_REVIEW = "set_item_review";
 	
 	public static final String TAG = "API";
 	public static final String secret = "0lymp#@creature5";
@@ -61,6 +62,16 @@ public class API {
 	public static void getItemReviews(int itemId, RequestObserver observer) {
 		sendRequestAsync(GET_ITEM_REVIEWS, "item_id=" + itemId, observer);
 	} 
+	
+	public static void setItemReview(int itemId, int rating, String reviewText, String itemType, RequestObserver observer) {
+		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+		params.add(new BasicNameValuePair("item_id", String.valueOf(itemId)));
+		params.add(new BasicNameValuePair("rating", String.valueOf(rating)));
+		params.add(new BasicNameValuePair("review_text", reviewText));
+		params.add(new BasicNameValuePair("item_type", itemType));
+		
+		sendRequestAsync(SET_ITEM_REVIEW, params, RequestObject.POST_METHOD, observer);
+	}
 	
 	private static void sendRequestAsync(String command, String params, RequestObserver observer) {
 		String paramsString = "&user_id=" + userId + "&fb_id=" + userFbId;

@@ -2,6 +2,9 @@ package com.restaurant.recommender.activity;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
@@ -22,6 +25,8 @@ import android.widget.TextView;
 
 import com.facebook.widget.ProfilePictureView;
 import com.restaurant.recommender.R;
+import com.restaurant.recommender.backend.API;
+import com.restaurant.recommender.backend.API.RequestObserver;
 import com.restaurant.recommender.data.ItemData;
 import com.restaurant.recommender.data.ItemReviewData;
 import com.restaurant.recommender.manager.UserDataManager;
@@ -123,6 +128,9 @@ public class RestaurantRatingActivity extends Activity {
 					case R.id.item_type_music:
 						RestaurantRatingActivity.this.selectedItemType = Constants.MOOD_RECOMMENDATION_TYPE_MUSIC;
 						break;
+					case R.id.item_type_sad:
+						RestaurantRatingActivity.this.selectedItemType = Constants.MOOD_RECOMMENDATION_TYPE_SAD;
+						break;
 					default:
 						RestaurantRatingActivity.this.selectedItemType = Constants.MOOD_RECOMMENDATION_TYPE_COFFEE;
 						break;
@@ -137,6 +145,18 @@ public class RestaurantRatingActivity extends Activity {
 				int rating = (int)((RatingBar) feedbackDialog.findViewById(R.id.rating)).getRating();
 				String review = ((EditText) feedbackDialog.findViewById(R.id.review)).getText().toString();
 				Log.d("heghine", "rating = " + rating + " --- review = " + review + " --- item_type = " + RestaurantRatingActivity.this.selectedItemType);
+				API.setItemReview(itemId, rating, review, RestaurantRatingActivity.this.selectedItemType, new RequestObserver() {
+					
+					@Override
+					public void onSuccess(JSONObject response) throws JSONException {
+						Log.d("heghine", "done = " + response.getInt("status"));
+					}
+					
+					@Override
+					public void onError(String response, Exception e) {
+						
+					}
+				});
 				feedbackDialog.dismiss();
 			}
 		});		

@@ -134,6 +134,14 @@ public class UserDataManager {
 			}
 		}
 		
+		for (String moodType : moodRecommendationsData.keySet()) {
+			for (int i = 0; i < moodRecommendationsData.get(moodType).size(); i++) {
+				if (moodRecommendationsData.get(moodType).get(i).itemId == itemId) {
+					return moodRecommendationsData.get(moodType).get(i);
+				}
+			}
+		}
+		
 		return null;
 	}
 	
