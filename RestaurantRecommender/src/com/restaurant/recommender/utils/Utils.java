@@ -3,6 +3,8 @@ package com.restaurant.recommender.utils;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -10,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.annotation.SuppressLint;
+
 import com.restaurant.recommender.data.FacebookPageData;
 import com.restaurant.recommender.manager.UserDataManager;
 
@@ -22,6 +25,10 @@ public class Utils {
 	public static final String TYPE_ART = "ART";
 	public static final String TYPE_ENTERTAINMENT = "ENTERTAINMENT";
 	
+	public static final String TYPE_FIGURE = "FIGURE";
+	public static final String TYPE_NEWS = "NEWS";
+	public static final String TYPE_PUBLISHER = "PUBLISHER";
+	
 	public static final String GENDER_MALE = "male";
 	public static final String GENDER_FEMALE = "female";
 	
@@ -29,8 +36,8 @@ public class Utils {
 	public static boolean isPageTypeRestaurant(String type) {
 		type = type.toUpperCase();
 		if (type.contains(TYPE_RESTAURANT) || type.contains(TYPE_CAFE) || type.contains(TYPE_BAR)
-				|| type.contains(TYPE_PUB) || type.contains(TYPE_CLUB) 
-				|| (type.contains(TYPE_ART) && type.contains(TYPE_ENTERTAINMENT))) {
+				|| (type.contains(TYPE_PUB) && !type.contains(TYPE_FIGURE) && !type.contains(TYPE_PUBLISHER) && !type.contains(TYPE_NEWS)) 
+				|| type.contains(TYPE_CLUB) || (type.contains(TYPE_ART) && type.contains(TYPE_ENTERTAINMENT))) {
 			return true;
 		}
 		
@@ -112,5 +119,13 @@ public class Utils {
 		}
 		
 		return countStr;
+	}
+	
+	@SuppressLint("SimpleDateFormat")
+	public static String getDate() {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+		String currentDateandTime = sdf.format(new Date());
+		
+		return currentDateandTime;
 	}
 }

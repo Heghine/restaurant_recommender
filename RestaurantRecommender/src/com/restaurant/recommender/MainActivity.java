@@ -148,14 +148,16 @@ public class MainActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		PreferenceManager.$().setUserId("4");
-		if (PreferenceManager.$().getUserId().equals("0")) {
+		PreferenceManager.$().setUserId("5");
+		String preferenceUserId = PreferenceManager.$().getUserId();
+		if (preferenceUserId.equals("0")) {
 			Log.d("heghine", "addNewUser --- ");
 			API.addNewUser("0", UserDataManager.$().userData.fbId, UserDataManager.$().userData.firstName, UserDataManager.$().userData.lastName, Utils.getGenderCode(UserDataManager.$().userData.gender), UserDataManager.$().userData.location, new RequestObserver() {
 				
 				@Override
 				public void onSuccess(JSONObject response) throws JSONException {
 					String userId = response.optString("user_id", "0");
+					Log.d("heghine", "user_id = " + userId);
 					PreferenceManager.$().setUserId(userId);
 					UserDataManager.$().userData.userId = userId;
 					API.userId = userId;
@@ -176,8 +178,8 @@ public class MainActivity extends Activity {
 				}
 			});
 		} else {
-			Log.d("heghine", "user_id = " + PreferenceManager.$().getUserId());
-			UserDataManager.$().userData.userId = PreferenceManager.$().getUserId();
+			Log.d("heghine", "user_id = " + preferenceUserId);
+			UserDataManager.$().userData.userId = preferenceUserId;
 			API.userId = UserDataManager.$().userData.userId;
 			API.userFbId = UserDataManager.$().userData.fbId;
 			requestUserPageLikes();
@@ -186,12 +188,11 @@ public class MainActivity extends Activity {
 	
 	private void initUserFbData(JSONObject data) {
 		UserDataManager.$().getUserLikedRestaurants(data);
-//		if (UserDataManager.$().hasLikedRestaurantPages()) {
-//			requestLikedPagesData();
-//		} else {
-			// do other method
+		if (UserDataManager.$().hasLikedRestaurantPages()) {
+			requestLikedPagesData();
+		} else {
 			startWelcomePageActivity();
-//		}
+		}
 	}
 	
 	public void startRecommendationsActivity(String moodType) {
@@ -200,7 +201,7 @@ public class MainActivity extends Activity {
 		startActivity(recommendationsActivity);
 	}
 	
-	private void startWelcomePageActivity() {
+	public void startWelcomePageActivity() {
 		Intent welcomePageActivity = new Intent(this, WelcomePageActivity.class);
 		startActivity(welcomePageActivity);
 	}

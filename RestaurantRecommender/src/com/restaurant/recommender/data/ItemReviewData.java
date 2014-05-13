@@ -13,6 +13,10 @@ public class ItemReviewData {
 	public String reviewText;
 	public String date;
 	
+	public ItemReviewData() {
+		
+	}
+	
 	public ItemReviewData(JSONObject itemReviewDataJson) {
 		reviewId = itemReviewDataJson.optInt("review_id", 0);
 		itemId = itemReviewDataJson.optInt("item_id", 0);

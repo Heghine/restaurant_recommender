@@ -57,13 +57,17 @@ public class RestaurantRatingActivity extends Activity {
 		ratingsAdapter = new RestaurantRatingItemAdapter();
 		((ListView) findViewById(R.id.restaurant_reviews)).setAdapter(ratingsAdapter);
 		
-		((Button) findViewById(R.id.add_review_button)).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				startFeedbackDialog();
-			}
-		});
+		if (UserDataManager.$().hasReviewedItem(itemId)) {
+			((Button) findViewById(R.id.add_review_button)).setEnabled(false);
+		} else {
+			((Button) findViewById(R.id.add_review_button)).setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					startFeedbackDialog();
+				}
+			});
+		}
 	}
 	
 	private class RestaurantRatingItemAdapter extends BaseAdapter {
@@ -145,11 +149,33 @@ public class RestaurantRatingActivity extends Activity {
 				int rating = (int)((RatingBar) feedbackDialog.findViewById(R.id.rating)).getRating();
 				String review = ((EditText) feedbackDialog.findViewById(R.id.review)).getText().toString();
 				Log.d("heghine", "rating = " + rating + " --- review = " + review + " --- item_type = " + RestaurantRatingActivity.this.selectedItemType);
+				
+				final ItemReviewData itemReview = new ItemReviewData();
+				itemReview.itemId = itemId;
+				itemReview.rating = rating;
+				itemReview.reviewText = review;
+				itemReview.itemType = RestaurantRatingActivity.this.selectedItemType;
+				itemReview.userId = UserDataManager.$().userData.userId;
+				itemReview.userFbId = UserDataManager.$().userData.fbId;
+				itemReview.userName = UserDataManager.$().userData.firstName + " " + UserDataManager.$().userData.lastName;
+				itemReview.date = Utils.getDate();
+				
 				API.setItemReview(itemId, rating, review, RestaurantRatingActivity.this.selectedItemType, new RequestObserver() {
 					
 					@Override
 					public void onSuccess(JSONObject response) throws JSONException {
 						Log.d("heghine", "done = " + response.getInt("status"));
+						boolean isReviewAdded = response.getInt("status") == 1 ? true : false;
+						
+						if (isReviewAdded) {
+							RestaurantRatingActivity.this.runOnUiThread(new Runnable() {
+								
+								@Override
+								public void run() {
+									addReview(itemReview);
+								}
+							});
+						}
 					}
 					
 					@Override
@@ -161,6 +187,18 @@ public class RestaurantRatingActivity extends Activity {
 			}
 		});		
 		feedbackDialog.show();
+	}
+	
+	public void addReview(ItemReviewData itemReview) {
+		if (UserDataManager.$().itemRatings.get(itemId) == null) {
+			ArrayList<ItemReviewData> itemReviews = new ArrayList<ItemReviewData>();
+			itemReviews.add(itemReview);
+			UserDataManager.$().itemRatings.put(itemId, itemReviews);
+		} else {
+			UserDataManager.$().itemRatings.get(itemId).add(itemReview);
+		}
+		ratingsAdapter.notifyDataSetChanged();
+		((Button) findViewById(R.id.add_review_button)).setEnabled(false);
 	}
 	
 }

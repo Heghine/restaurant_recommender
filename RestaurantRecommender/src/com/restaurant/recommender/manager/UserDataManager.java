@@ -117,7 +117,11 @@ public class UserDataManager {
 					ItemData item = new ItemData(recommenderItemsJson.getJSONObject(i));
 					recommendationsData.add(item);
 				}
-				RestaurantRecommender.$().roActivity.startRecommendationsActivity("");
+				if (recommendationsData.size() > 0) {
+					RestaurantRecommender.$().roActivity.startRecommendationsActivity("");
+				} else {
+					RestaurantRecommender.$().roActivity.startWelcomePageActivity();
+				}
 			}
 			
 			@Override
@@ -147,5 +151,17 @@ public class UserDataManager {
 	
 	public boolean hasMoodTypeRecommendations(String type) {
 		return moodRecommendationsData.get(type) != null;
+	}
+	
+	public boolean hasReviewedItem(int itemId) {
+		if (itemRatings.get(itemId) != null) {
+			for (int i = 0; i < itemRatings.get(itemId).size(); i++) {
+				if (itemRatings.get(itemId).get(i).userId.equals(userData.userId)) {
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 }

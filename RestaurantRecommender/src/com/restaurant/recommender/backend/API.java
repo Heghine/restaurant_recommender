@@ -42,7 +42,7 @@ public class API {
 		API.userId = userId;
 		API.userFbId = userFbId;
 
-		sendRequestAsync(ADD_NEW_USER, "&first_name=" + firstName + "&last_name=" + lastName + "&g=" + gender + "&location=" + location, observer);
+		sendRequestAsync(ADD_NEW_USER, "first_name=" + firstName + "&last_name=" + lastName + "&g=" + gender + "&location=" + location, observer);
 	}
 
 	public static void setUserPreferences(String preferences, RequestObserver observer) {
@@ -74,7 +74,7 @@ public class API {
 	}
 	
 	private static void sendRequestAsync(String command, String params, RequestObserver observer) {
-		String paramsString = "&user_id=" + userId + "&fb_id=" + userFbId;
+		String paramsString = "&user_id=" + userId + "&user_fb_id=" + userFbId;
 		if (params != null && !params.equals("")) {
 			paramsString = paramsString + "&" + params;
 		}
