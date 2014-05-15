@@ -164,4 +164,12 @@ public class UserDataManager {
 		
 		return false;
 	}
+	
+	public void clearUserData() {
+		userData = null;
+		userRestaurantPages.clear();
+		recommendationsData.clear();
+		itemRatings.clear();
+		PreferenceManager.$().setUserId("0");
+	}
 }

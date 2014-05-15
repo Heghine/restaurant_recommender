@@ -1,11 +1,9 @@
 package com.restaurant.recommender.activity;
 
 import java.util.ArrayList;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,8 +16,10 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-
+import com.facebook.model.GraphUser;
+import com.facebook.widget.LoginButton;
 import com.facebook.widget.ProfilePictureView;
+import com.facebook.widget.LoginButton.UserInfoChangedCallback;
 import com.restaurant.recommender.R;
 import com.restaurant.recommender.backend.API;
 import com.restaurant.recommender.backend.API.RequestObserver;
@@ -53,6 +53,18 @@ public class RecommendationsActivity extends Activity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
 				int selectedItemId = recommendationAdapter.getItem(position).itemId;
 				getItemRevies(selectedItemId);
+			}
+		});
+		
+		LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
+		loginButton.setUserInfoChangedCallback(new UserInfoChangedCallback() {
+			
+			@Override
+			public void onUserInfoFetched(GraphUser user) {
+				if (user == null) {
+					UserDataManager.$().clearUserData();
+					RecommendationsActivity.this.finish();
+				}
 			}
 		});
 	}

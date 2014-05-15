@@ -56,7 +56,7 @@ public class MainActivity extends Activity {
 			@Override
 			public void onUserInfoFetched(GraphUser user) {
 				if (user == null) {
-					// do log out
+					UserDataManager.$().clearUserData();
 				} else {
 					initUser(user);
 				}
@@ -148,7 +148,7 @@ public class MainActivity extends Activity {
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
-		PreferenceManager.$().setUserId("5");
+		
 		String preferenceUserId = PreferenceManager.$().getUserId();
 		if (preferenceUserId.equals("0")) {
 			Log.d("heghine", "addNewUser --- ");
