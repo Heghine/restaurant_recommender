@@ -41,7 +41,15 @@ public class API {
 	public static void addNewUser(String userId, String userFbId, String firstName, String lastName, int gender, String location, RequestObserver observer) {
 		API.userId = userId;
 		API.userFbId = userFbId;
-
+		
+//		ArrayList<BasicNameValuePair> params = new ArrayList<BasicNameValuePair>();
+//		params.add(new BasicNameValuePair("first_name", firstName));
+//		params.add(new BasicNameValuePair("last_name", lastName));
+//		params.add(new BasicNameValuePair("g", String.valueOf(gender)));
+//		params.add(new BasicNameValuePair("location", location));
+//		
+//		sendRequestAsync(ADD_NEW_USER, params, RequestObject.GET_METHOD, observer);
+		
 		sendRequestAsync(ADD_NEW_USER, "first_name=" + firstName + "&last_name=" + lastName + "&g=" + gender + "&location=" + location, observer);
 	}
 
